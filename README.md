@@ -7,7 +7,7 @@ work tracked in Linear.
 
 | Skill | What it does |
 |---|---|
-| `linear-brainstorming` | Before any coding or design work: finds out what is wanted and why, lays out the approaches, and gets a design doc approved in `docs/plans/`. Sizes the work as a small change, a feature or a large story. Reads Linear, never writes it. |
+| `linear-brainstorming` | Before any coding or design work: explores the project, asks clarifying questions one at a time in a dialog, confirms what is being built, proposes two or three approaches to pick from, walks through the design section by section, then writes the approved design doc in `docs/plans/`. Sizes the work as a small change, a feature or a large story. Reads Linear, never writes it. |
 | `linear-writing-plans` | Turns the approved design into a plan of tasks with acceptance criteria in `docs/plans/`, then, after a yes, creates the work in Linear. Never starts implementing. |
 | `linear-executing-plans` | Builds the plan task by task, test first, committing per task. Keeps Linear current: issues move backlog → to do → in progress → done, criteria are ticked off, and each task gets a comment with its commits and any decision made. Ends with a fresh review of the branch, and asks before merging or pushing. |
 

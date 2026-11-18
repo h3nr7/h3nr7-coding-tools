@@ -1,62 +1,128 @@
 ---
 name: linear-brainstorming
-description: "Use this before any coding, system design or software design and development work: a new feature, a component, a change in behaviour, a refactor, an architecture question, a new service or project. It finds out what the user wants and why, lays out the approaches, and gets a design doc approved in docs/plans/ before anything is built. The work is sized for Linear as one issue, a feature with sub-issues, or a project of several features; linear-writing-plans then writes the plan and creates the issues. Use it even when the request looks simple or never mentions Linear. Without Linear it still writes the docs."
+description: "Use this before any coding, system design or software design and development work: a new feature, a component, a change in behaviour, a refactor, an architecture question, a new service or project. It explores the project, asks clarifying questions one at a time in a dialog, confirms what is being built, proposes two or three approaches for the user to pick from, walks through the design section by section, and only then writes an approved design doc in docs/plans/. The work is sized for Linear as one issue, a feature with sub-issues, or a project of several features; linear-writing-plans then writes the plan and creates the issues. Use it even when the request looks simple or never mentions Linear. Without Linear it still writes the docs."
 ---
 
 # Linear Brainstorming
 
-You are very good at building. You build what you believe the user wants,
-and that belief is usually thinner than it feels. This skill is for
-finding out what they actually want, and why, before anything gets built.
+Turn an idea into an approved design through a conversation with the
+user, before anything gets built.
 
-People often haven't finished working out what they want. Good questions
-help them think it through. When you understand the why, you make the
-hundred decisions they never mention the way they would have made them.
+You are very good at building, and you build what you believe the user
+wants. That belief is usually thinner than it feels. People often haven't
+finished working out what they want, and a decision you make for them
+quietly is one they never got to disagree with. So this skill has an
+order, and the order is the point: **understand first, then approaches,
+then design.** You do not weigh up how to build something until you and
+the user agree on what it is, and you do not write a design until they
+have picked how.
 
 The design ends in two places. This skill writes a design doc in
 `docs/plans/`. The `linear-writing-plans` skill then writes the plan next
 to it and puts the work into Linear: a feature is an issue, each task a
 sub-issue with acceptance criteria, and a story of several features is a
-project. This skill only reads Linear. Nothing is created there until the
-plan is approved, so a design that gets dropped leaves nothing to clean
-up.
+project. This skill only reads Linear.
 
-## First: What Do You Actually Know?
+<HARD-GATE>
+Nothing gets built until the user has approved the design. Building
+includes writing product code, scaffolding, installing dependencies,
+creating projects, and invoking an implementation skill. Reading and
+exploring are fine.
 
-Before you reply, ask yourself: what do I know about what they want, and
-why?
+Nothing gets written to Linear by this skill. Issues, sub-issues and
+projects are created by `linear-writing-plans`, after the plan is
+approved.
 
-- **Everything that matters is in the request** ("make the icon cornflower
-  blue", "fix the typo in the footer"). This is a quick, clear task. Do
-  it, and say what you did. It needs no design and no issue.
-- **Something non-trivial is missing.** Start the conversation.
+After the design doc is approved, the next step is the plan: invoke
+`linear-writing-plans` and no other skill.
+</HARD-GATE>
 
-Before you start implementing, you must, in order:
+## Is this too small?
 
-1. Lay out the approaches in a message of their own, and have the user
-   pick one (see Lay out the approaches).
-2. Size the work and settle where it goes in Linear (see Size the Work).
-3. Write the design doc, short or full (see The Written Design).
-4. Get their approval of that doc.
-5. Invoke the `linear-writing-plans` skill.
+If everything that matters is in the request ("make the icon cornflower
+blue", "rename `getUser` to `fetchUser` everywhere"), it is a quick,
+clear task. Do it and say what you did. It needs no design and no issue.
 
-If nothing is open when you write your first message and there's one
-sensible way, steps 1 to 4 happen in that message (see Your First
-Message).
+Anything else goes through the steps, however simple it looks. Simple
+work is where unexamined assumptions waste the most effort. The steps
+scale down: for a small change each one is a few lines, but none is
+skipped.
 
-Two things aren't implementing: a spike they said yes to (see Spike to
-feel things out), and doing what they asked once they've opted out of the
-questions.
+If the user says to skip the questions and just build it, the skill is
+done: say in one line how you'll build it, and do it.
 
-## Look Before You Ask
+## The steps
 
-In an existing project, or when they've given you context (a spec, a
-plan, an issue, files they pointed at, earlier conversation), dig in
-before your first message. Read what they referred to and the code it
-connects to, and keep reading until you can explain how the relevant
-parts work today and what this change would touch. Never ask what the
-project or their context already answers, or reopen what they've already
-decided.
+Work through these in order. If you have a task or todo tool, create a
+task for each when you start, so the user can see where the conversation
+is.
+
+1. **Explore the context**: the code, the docs, Linear.
+2. **Play back** what you understood and what you found.
+3. **Ask clarifying questions**, one at a time, in a dialog.
+4. **Confirm what is being built**, and get a yes.
+5. **Propose two or three approaches**, and have the user pick one.
+6. **Size the work** and settle where it goes in Linear.
+7. **Present the design**, section by section, with a yes after each.
+8. **Write the design doc** and get it approved.
+9. **Hand over** to `linear-writing-plans`.
+
+Each step has a gate, and you don't pass it on your own. Step 4 needs
+their yes before any talk of approaches. Step 5 needs their pick before
+any design. Step 7 needs a yes per section before the doc is written.
+
+If something they say changes the picture (a new requirement, a change of
+mind), go back to the step it belongs to. A change to what is being built
+goes back to step 4: restate the whole thing and confirm it again, so you
+both hold the same version.
+
+## How to ask
+
+Ask through the question dialog: the tool that shows the user a question
+with options to pick from (`AskUserQuestion` in Claude Code; load it
+first if it isn't loaded). A dialog is quicker to answer than a
+paragraph, and it makes it plain that you have stopped and are waiting.
+
+- **One question at a time.** The next question usually depends on the
+  answer, so one dialog, one question, then wait.
+- **Two to four concrete options**, each with a line on what picking it
+  means: what gets built, what it costs. Take the options from what you
+  found in this project, not from a generic list. Put the one you'd pick
+  first and mark it "(Recommended)". The dialog adds its own "Other" for
+  a free-text answer, so don't add one.
+- **The question stands on its own.** While the dialog is open the user
+  may not see what you wrote before it. Put what they need into the
+  question and the option descriptions. Where options are easier to
+  compare by looking, give each a short preview: a sketch of the screen,
+  the shape of the data.
+- **A question you can't put options to** ("what is this page for?") is
+  asked in plain text, alone, as the last thing in the message.
+- **No dialog tool:** ask in plain text. One question, the options as a
+  short numbered list with your pick marked, and stop there.
+
+Then stop and wait for the answer. Three things are never an answer:
+
+- **Your own guess.** Don't write "I'll assume X unless you say
+  otherwise" and move on. If the answer changes what gets built, it is a
+  question, and it stays open until they answer it.
+- **Silence.** "You didn't object, so I'll take that as your pick" is you
+  deciding. Ask.
+- **Unclear wording.** If you can't tell what they meant by a phrase, ask
+  about that phrase before the next step, offering the readings you can
+  think of as the options. Don't carry a guess about it through the
+  design.
+
+Ask only what the project can't tell you. Never ask what the code, the
+docs or their earlier messages already answer, and don't reopen what they
+have decided. Where files go, how you write things up and what you read
+next are your calls: do them and say so.
+
+## 1. Explore the context
+
+Before your first message, read. In an existing project, read what the
+request refers to and the code it connects to, and keep reading until you
+can explain how the relevant parts work today and what this change would
+touch.
 
 Look in three more places:
 
@@ -67,168 +133,107 @@ Look in three more places:
   contradict.
 - **Linear, if a Linear connector is available**: when they name an issue
   (`ABC-12`), read it and its comments first. Otherwise search for an
-  issue or project that already covers this work, so the design builds on
-  it instead of duplicating it. If Linear isn't available, carry on; it
-  only matters at the end.
+  issue or project that already covers this work. If Linear isn't
+  available, carry on; it only matters at the end.
 
-## Your First Message
+## 2. Play back
 
-Move the work forward, with one of these:
+Your first message says what you understood and what you found, briefly:
 
-- **They've already said what they want** (a spec, a plan, an issue, a
-  detailed request): aim for about 200 words for the whole message. Echo
-  their request back in your own words, so they can see whether you've
-  got its shape: what they want, who it's for, and why, as far as they've
-  said. Add what you found that bears on it: how the relevant parts work
-  today and what the change would touch. If you found something they may
-  not have considered that would change what they're asking for or how it
-  has to be built, like a constraint, a conflict, an existing issue, or a
-  cheaper path, say so plainly. How to build it comes later, once you
-  understand what they want (see Lay out the approaches). End with one
-  line inviting corrections. Then, if they haven't told you why they want
-  it, even if you can guess, ask about that: one open question in their
-  own terms, with nothing to pick from. If they have told you, and their
-  request and the project leave open something whose answer would change
-  what gets built, ask about the one that would change it most; when its
-  choices can be named, sketch each concretely, with what it trades off
-  and which you'd pick. If nothing like that is open, there's one
-  sensible way: end with the short design itself (the approach, a line on
-  why the others don't fit, the design in a few lines, and its size) and
-  ask them to approve it. Their approval covers the approach and the
-  design: write the short design doc as approved and go on to the plan.
-  Specs are often incomplete, so confirm before you build on one.
-- **They haven't:** one open question, in their own terms, about the
-  biggest thing their request leaves unsettled. Say why you're asking:
-  what the answer would change about what you build. For "add search to
-  the docs site": "If it's for readers who know the term they want, a
-  title filter in the sidebar does it; searching the body text is an
-  index and a results page. What does someone type when they're stuck?"
+- their request in your own words: what they want and who it is for
+- how the relevant parts work today, and what this would touch
+- anything they may not have considered that changes what they are
+  asking for: a constraint, a conflict, an existing issue, a cheaper path
 
-How the message ends depends on whether their message asked for
-brainstorming:
+Keep it to what bears on the request, about 150 words. Don't propose how
+to build it yet, and don't make decisions for them here. Anything you are
+unsure of becomes a question in step 3, not a "my proposal" in this
+message. End the message with the first question.
 
-- **They asked for it** (by name, by invoking it, or by asking for a
-  design discussion): end there. They want this conversation.
-- **They didn't:** they may not want a conversation at all. End with a
-  light, one-line offer to just get going instead, like "Or if you'd
-  rather I just dive in, say so." If they take you up on it, this skill
-  is done: state any significant how-it-gets-made choice (platform,
-  language, library) in one plain line, then do what they asked through
-  the normal workflow.
+## 3. Ask clarifying questions
 
-That's the whole message.
+Now find out what they want and why. Cover this ground, roughly in this
+order, skipping what you already know:
 
-## The Conversation
+- **Purpose:** what it is for, who uses it, why now
+- **Scope:** what is in, what is out, what it must not do
+- **Behaviour:** what happens in the cases they haven't mentioned
+- **Constraints:** what it has to fit with or stay inside
+- **Success:** how they would know it works (this becomes the acceptance
+  criteria later)
 
-Ask a question only when the answer would change what gets built and
-neither the request nor the project answers it. Otherwise, state your
-call and your reason as a proposal they can correct, and move the work
-forward. Process steps are always your calls: writing things up, where
-files go, looking further, how to show something. Do them and say so. Ask
-one at a time. Use plain language and match their vocabulary; never use
-process jargon. You never need to quote this skill to the user.
-
-Be clear and concise. Lead with what matters. When you report what you
-found, give them the most important findings and offer the rest.
-
-**Get them describing.** Until you know why they want it, ask open
-questions, with no example answers attached. Their own words carry intent
-that your options can't. Once you know why, when a decision has choices
-you can name, sketch each concretely, with what it trades off and which
-you'd pick. When they say "just guess" or "what do you think?", propose
-something concrete.
-
-**How it gets made.** Every design rests on choices about platform,
-language, libraries, storage and services. Read from how they talk which
-of those choices they want to make. Someone who raises the how or asks
-about trade-offs wants the options with your pick. Someone who talks
-about outcomes is handing you the how: make those calls and state each in
-a line. When there's existing work, build on what it already uses. Any
-choice you make goes in the design as your call, never as something they
-agreed to.
-
-**Ground to cover.** This is territory, not a script. Never read these
-out as questions:
-
-- what kind of thing this is, and what makes it special
-- why now, and what success looks like to them
-- goals, non-goals, and anti-goals (what would make this a failure even
-  if it technically works)
-- prior art: what they've seen elsewhere, loved or hated
-- current state: what exists now, what they've tried
-- the details they care about
-- how they'd know it works: this becomes the acceptance criteria later
-
-**Make every question specific** to their project and what they've told
-you. Ask the way a sharp colleague would: build each question on their
+Make every question specific to their project. Build each one on their
 last answer or on something you found, so it helps them think through a
-consequence or a case they may have missed ("The feed caches for an hour,
-and a post can be unpublished. Does an unpublished post stay on the home
-page until the cache turns over?"). When the reason isn't already plain,
-say what you're hoping to learn or what the answer would change. A
-proposal they can correct, plus your reason for it, often beats a
-question.
+consequence they may have missed ("The feed caches for an hour, and a
+post can be unpublished. Should an unpublished post stay on the home page
+until the cache turns over?"). Say what the answer would change when that
+isn't obvious.
 
-**Do recon.** Once you have a bit of grounding and looking further would
-help, go look: deeper into the codebase, their own files and data, the
-docs of a library, or the web. Say what you looked for and what you
-found.
+Keep going until you could write down what is being built without
+guessing. For a feature that is usually three to six questions. Short
+answers are fine; don't pad the list.
 
-**Lay out the approaches.** Once you understand what they want, and
-before you write anything up, put the ways of building it in a message of
-its own. Come up with several real alternatives and drop the weak ones,
-including any that work against why they want it and any the existing
-code rules out. Sketch the two or three that remain concretely enough to
-picture, grounded in what the project actually does, with what each
-trades off. Recommend one and say why, then ask which way they want to
-go; if they've handed you the how, say you'll go with your pick instead.
-When there's genuinely one sensible way, say so in that message and
-explain why the others don't fit; the design comes in the next one. This
-is for how it gets built; for what they want, get them describing first.
+These questions are about what they want, not how to build it. Hold the
+how for step 5.
 
 **Spot a story early.** If the request is plainly several features
 ("rebuild billing: invoices, retries, a portal, metering"), say so as
-soon as you see it and keep the conversation at story level: why, the
-list of features, their order, what they share. The detail of each
-feature belongs in its own design later, so questions about it now are
-asked twice.
+soon as you see it and keep the questions at story level: why, the list
+of features, their order, what they share. The detail of each feature
+belongs in its own design later.
 
-**Show, don't tell.** Whenever seeing would help more than reading,
-sketch it in text: a few lines of what they'd see, the shape of a
-request and its response, a small diagram of what calls what.
+## 4. Confirm what is being built
 
-**Spike to feel things out.** A quick throwaway build is often the
-cheapest way to learn what they want or whether something works. Offer
-one when it would help. When they just want to spike, get out of the way.
-Spikes get no tests or minimal ones, aren't bulletproof, and skip the
-plan and the issues. Bring what the spike taught you back into the
-conversation.
+Play the whole thing back in one message: what it does, who it is for,
+what is in and out, the constraints, and how they'd know it works. A
+short list is best. Leave out how it will be built.
 
-## Play It Back
+Only what they said goes in as settled. If there is something you still
+had to fill in, it isn't settled: ask it first.
 
-Play back as you go. As soon as you understand one part well enough to
-describe it (what it's for and who it serves, say, or how one piece
-behaves), describe that part back in about 200-300 words, then return to
-questions about the next part. Playback and questions alternate through
-the whole conversation; the last chunk covers whatever is left.
+Then ask, in a dialog, whether this is what they want built. A yes opens
+step 5. Anything else, fix it and confirm again.
 
-Only what they said goes in as theirs. Anything you filled in goes in as
-your proposal, with your reason. End each chunk by asking what's wrong or
-missing.
+## 5. Propose approaches
 
-## Size the Work
+Only now, how to build it. Put this in a message of its own.
 
-Once you understand what they want and they've picked an approach, say
-how big the work is in plain words. The size decides the design doc and
-what the work becomes in Linear. They can override it.
+Come up with several real alternatives and drop the weak ones: any that
+work against why they want it, and any the existing code rules out.
+Present the two or three that remain, each the same way:
+
+- **What it is**, in a sentence
+- **How it would work here:** the parts of this codebase it touches and
+  what changes in each, concretely enough to picture
+- **What it gives them**
+- **What it costs or risks**
+
+Then say which one you recommend and why, tied to what they told you they
+want. With three approaches, a small comparison table helps.
+
+If there is genuinely one sensible way, still say what else you
+considered and why it doesn't fit, so they can see the choice was made
+and not skipped.
+
+Then ask them to pick, in a dialog, with the approaches as the options
+and your recommendation first. Each option's description carries its main
+trade-off, so the dialog can be answered on its own. No pick, no design.
+
+If they want to talk an approach through, do: answer, adjust the
+approaches, and ask again.
+
+## 6. Size the work
+
+Say how big the work is in plain words. The size decides the design doc
+and what the work becomes in Linear. They can override it.
 
 | Size | What it is | Design doc | In Linear |
 |------|-----------|------------|-----------|
-| A small change | one task, one reviewable change | a short one: what you already covered together, written down | one issue with its acceptance criteria |
+| A small change | one task, one reviewable change | a short one: what you covered together, written down | one issue with its acceptance criteria |
 | A feature | several tasks that ship one thing | the full written design | one issue for the feature, a sub-issue for each task |
 | A large story | several features, each worth its own design | a story design (below), then a design for each feature | a project, with one issue for each feature |
 
-If it grows mid-task, stop, say so, and step up a size.
+If it grows later, stop, say so, and step up a size.
 
 **Where it goes in Linear.** Settle this now so the design doc can record
 it. If Linear isn't available, skip it and write `Linear: not available`
@@ -240,12 +245,11 @@ Linear is there.
   update it instead of creating another.
 - **The project.** A feature or a small change can go into any project,
   or none. Use the one they named. Failing that, use the one the
-  project's instructions name. Failing that, if this repo's recent issues
-  all sit in one project, propose that one as your call. Otherwise ask
-  once, naming the existing projects and "no project".
-- **A large story** becomes a new project by default. Say so as a
-  proposal: they may prefer its features to sit in a project that already
-  exists.
+  project's instructions name. Failing that, ask in a dialog: the
+  existing projects as options, with the one this repo's recent issues
+  sit in first, and "No project".
+- **A large story** becomes a new project by default. Offer that and the
+  existing projects as the options.
 
 **A large story.** Don't design every feature at once. Write a story
 design that covers the whole: why, the features in the order to build
@@ -262,19 +266,62 @@ issue, `Project:` is the story's project, and `Builds on:` names the
 story design. Read the story design first and don't reopen what it
 settled.
 
-## The Written Design
+## 7. Present the design
+
+Walk the user through the design in the conversation, before any doc
+exists. A doc is slow to read and slow to change; a section in the chat
+can be corrected in one line.
+
+Present it in sections, one per message. Use the ones the work needs:
+
+- **How it fits together:** the shape of the solution and where it sits
+  in what exists
+- **The parts:** each piece that is new or changes, and what it is
+  responsible for
+- **Data and flow:** what moves where, in what order
+- **What the user sees:** sketched in text, when there is something to
+  see
+- **Errors and edge cases:** what happens when things go wrong, and in
+  the cases from step 3
+- **Testing:** how each behaviour will be proved to work
+- **Not doing:** what is deliberately left out
+
+Scale each section to its complexity: a few sentences if it is
+straightforward, up to 200-300 words if it is subtle. A small change is
+one short section.
+
+Inside a section, separate two kinds of decision. Anything that changes
+what the user or their visitors will see, or that would be costly to
+undo, is theirs: ask it as a question before or with the section. Smaller
+calls that a sensible engineer would make either way are yours: list them
+at the end of the section under "My calls", so they can be read and
+overruled.
+
+End each section by asking, in a dialog, whether it looks right. A yes
+moves to the next section. Otherwise revise that section and ask again.
+
+Whenever seeing would help more than reading, sketch it in text: a few
+lines of what they'd see, the shape of a request and its response, a
+small diagram of what calls what.
+
+## 8. Write the design doc
+
+Write down the design they have just agreed to, section by section.
+Nothing appears in the doc that they haven't seen in the conversation,
+apart from what the builder check adds, which you list for them.
 
 Write a plain document a talented engineer could plan from without going
 back to the user. Cover:
 
 - intent and the why
-- goals, non-goals, anti-goals
+- goals, non-goals, anti-goals (what would make this a failure even if it
+  technically works)
 - constraints
-- approaches: the two or three ways you considered building it, what each
-  trades off, which one they picked, and why (they pick in the
-  conversation, before you write the doc)
-- the parts of the how they decided, as they decided them, and the calls
-  you made, marked as yours
+- approaches: the ones you presented, what each trades off, which one
+  they picked, and why
+- the design, as agreed in step 7
+- the decisions they made, as they made them, and the calls you made,
+  marked as yours
 - how they'd know it works
 - what's left to the builder
 
@@ -293,28 +340,19 @@ Builds on: <earlier design docs or issues, if any>
 ```
 
 `Project: none` is a decision to use no project. Write `not settled` when
-the question wasn't answered.
-
-Set `Status: approved` once they approve it. For a small change, the
-short design covers the same points in a line or two each and goes
-straight to the user, without the builder check. A story design adds a
-**Features** section: the ordered list the project's issues are made
-from.
+the question wasn't answered. A story design adds a **Features** section:
+the ordered list the project's issues are made from. For a small change,
+the doc covers the same points in a line or two each.
 
 **Where it goes:** `docs/plans/YYYY-MM-DD-<topic>-design.md`, with
 today's date. The project's instructions and the user's preferences
-override this. Once it is approved, commit it where the project's
-instructions say plan docs are committed, or where earlier ones in
-`docs/plans/` are tracked. Commit only the doc. If the checked-out branch
-is the default branch or belongs to other work, don't commit: say the doc
-is uncommitted and ask where it should go.
+override this.
 
 **Builder check** (for a feature or a story): dispatch a fresh subagent
 with `references/builder-check-prompt.md`, which has one prompt for a
-feature and one for a story. When you tell the user you're
-writing it up, say a reviewer will read it first and you may come back
-once with a few questions. Don't hand over the document until the check
-is back. Sort what the builder asks into three piles:
+feature and one for a story. Tell the user a reviewer is reading the doc
+and you may come back once with a few questions. Sort what the builder
+asks into three piles:
 
 - **Answered already** by the conversation or the project: put the answer
   in the document.
@@ -322,43 +360,47 @@ is back. Sort what the builder asks into three piles:
   gets built. Settle it yourself and mark it in the document as your
   call.
 - **Theirs:** only the user can answer it, and the answer changes what
-  gets built.
+  gets built. Ask these one at a time, in dialogs, most important first.
 
-Bring the "theirs" pile in one message, most important first. Update the
-document with their answers, then hand it over with a short list of the
-calls you made so they can check those while reading. That's the only
-round of questions the check produces. Without a subagent tool, read the
-document as that builder yourself.
+That is the only round of questions the check produces. Without a
+subagent tool, read the document as that builder yourself.
 
-<HARD-GATE>
-Nothing gets built until the user approves the design doc: the short one
-for a small change, the full one for a feature, the story design for a
-large story. Building includes writing product code, scaffolding,
-installing dependencies, creating projects, and invoking an
-implementation skill. Reading and exploring are fine.
+**Approval.** Link the doc, list anything in it they haven't already
+seen (the builder check's answers and your calls), and ask in a dialog
+whether they approve it. Once they do, set `Status: approved`.
 
-Nothing gets written to Linear by this skill, approved or not. Issues,
-sub-issues and projects are created by `linear-writing-plans`, after the
-plan is approved.
+Commit the doc where the project's instructions say plan docs are
+committed, or where earlier ones in `docs/plans/` are tracked. Commit
+only the doc. If the checked-out branch is the default branch or belongs
+to other work, don't commit: say the doc is uncommitted and ask where it
+should go.
 
-Two exceptions to the first rule. If they opted out of the questions, the
-skill is done and the gate goes with it. A spike they said yes to may be
-built; it stays labeled throwaway, and keeping what it produced is a new
-request that comes back through this gate.
+## 9. Hand over
 
-After the design doc is approved, the next step is the plan: invoke
-`linear-writing-plans` and no other skill.
-</HARD-GATE>
+Invoke `linear-writing-plans`. Do not invoke any other skill, and do not
+start building.
 
-## Red Flags
+## Spikes
+
+A quick throwaway build is sometimes the cheapest way to learn what they
+want or whether something works. Offer one when it would help, and build
+it only on a yes. A spike gets no tests or minimal ones, skips the plan
+and the issues, and stays labelled throwaway. Bring what it taught you
+back into the conversation at the step it bears on. Keeping what a spike
+produced is a new request that comes back through the gate.
+
+## Red flags
 
 | Thought | Reality |
 |---------|---------|
-| "I'll offer a menu of what they might want" | Options steer. Ask them to describe it first. |
-| "I'll fill in sensible defaults" | Good. Say them out loud. A default they never heard is one they couldn't reject. |
-| "I've answered their questions, so I'll write the doc" | Lay out the approaches first, in a message of their own (or, when nothing was open from the start, in your first message's short design). |
-| "I should explain the process first" | Ask your question. The process shows itself. |
-| "They said 'sounds good' to the idea" | Approval covers what you showed them. A design doc you haven't written isn't approved. |
-| "I'll create the issue now so we have somewhere to put this" | Not yet. Issues come after the plan, in one go, once they've seen the tree. |
-| "This story is big, so I'll design all of it in one doc" | A story design lists the features. Each feature gets its own design when its turn comes. |
-| "The spike works, I'll keep building on it" | Keeping it is a new request. Back through the gate. |
+| "I know enough to pick an approach" | Have they confirmed what is being built? Step 4 comes first. |
+| "I'll ask this in the message, it's quicker" | Use the dialog. It is quicker for them, and it shows you're waiting. |
+| "I'll ask these three things together" | One at a time. The second usually depends on the first. |
+| "I'll assume that's what they meant and note it" | An assumption that changes the build is a question. Ask it now. |
+| "They didn't object, so that's their pick" | Silence isn't a pick. Ask. |
+| "There's only one sensible way, I'll go straight to the design" | Say what else you considered, and still ask. |
+| "I'll write the doc and they can react to it" | Walk it through in sections first. The doc records what was agreed. |
+| "This is my call, I'll mention it later" | If they would see the difference, it is theirs. If not, list it under "My calls" now. |
+| "They changed their mind, I'll patch the design" | Go back to step 4 and confirm the whole picture again. |
+| "I'll create the issue now so we have somewhere to put this" | Not yet. Issues come after the plan, once they've seen the tree. |
+| "This story is big, so I'll design all of it in one doc" | A story design lists the features. Each gets its own design in turn. |

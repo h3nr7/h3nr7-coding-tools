@@ -184,6 +184,17 @@ per feature, taken from the story design's Features section.
 
 If Linear is not available, say so in a line and ask only about the plan.
 
+Ask through the question dialog (`AskUserQuestion` in Claude Code; load
+it first if it isn't loaded), so it is plain you have stopped and are
+waiting. One question, with options such as "Approve and create the
+issues", "Change the plan" and "Keep the plan, skip Linear". The dialog
+may be all the user sees while it is open, so the question names the plan
+file and says how many issues will be created and in which project. No
+dialog tool: ask the same question in plain text and stop.
+
+If a task's wording rests on something the design left as a guess, don't
+plan around the guess: ask about it first, the same way.
+
 Nothing is written to Linear before their yes. Creating issues is visible
 to everyone in the workspace and tedious to undo, and a plan they haven't
 read isn't approved.

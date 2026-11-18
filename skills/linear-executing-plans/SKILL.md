@@ -48,7 +48,8 @@ your memory.
    first: a merge, a push, a publish, a deploy, a write to a live system
 4. a plan so broken that every way forward is a guess
 
-For those, stop and ask. Everything else is a ruling.
+For those, stop and ask, through the question dialog (`AskUserQuestion`
+in Claude Code) where there is one. Everything else is a ruling.
 
 ## Setup
 
@@ -239,7 +240,9 @@ state it is in, then give these lists, each complete:
 - **Deferred minors** from the review
 - **Noticed but not done**: things outside the plan worth an issue
 
-Then ask what to do with the branch, and wait. The choice is theirs:
+Then ask what to do with the branch, through the question dialog
+(`AskUserQuestion` in Claude Code) where there is one, and wait. The
+choice is theirs:
 
 1. Merge it into the base branch locally.
 2. Push it and open a pull request.
