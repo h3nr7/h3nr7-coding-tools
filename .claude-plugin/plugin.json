@@ -1,0 +1,11 @@
+{
+  "name": "h3nr7-coding-tools",
+  "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built.",
+  "version": "0.1.0",
+  "author": {
+    "name": "h3nr7"
+  },
+  "repository": "https://github.com/h3nr7/h3nr7-coding-tools",
+  "license": "MIT",
+  "keywords": ["skills", "linear", "brainstorming", "design", "planning"]
+}

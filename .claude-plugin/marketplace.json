@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "h3nr7-coding-tools",
+  "description": "h3nr7's coding skills for Claude Code.",
+  "owner": {
+    "name": "h3nr7"
+  },
+  "plugins": [
+    {
+      "name": "h3nr7-coding-tools",
+      "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built.",
+      "source": "./",
+      "category": "development"
+    }
+  ]
+}
