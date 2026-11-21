@@ -71,16 +71,27 @@ costs nothing visible, and the `ligatures` prop takes another list.
 
 ## Dependencies
 
-| Package | Range | For |
+| Package | Range | Kind |
 |---|---|---|
-| `radix-ui` | `^1.6.7` | Dialog, Drawer, Tooltip, Popover, Switch, Slider, Field |
-| `clsx` | `^2.1.1` | `cn` |
-| `tailwind-merge` | `^3.6.0` | `cn` |
-| `react`, `react-dom` | `^19.2.0` | peers |
-| `tailwindcss`, `@tailwindcss/vite` | `^4.3.0` | only for the Tailwind components |
+| `radix-ui` | `^1.6.7` | dependency |
+| `clsx` | `^2.1.1` | dependency |
+| `tailwind-merge` | `^3.6.0` | dependency |
+| `react` | `^19.2.0` | dependency |
+| `react-dom` | `^19.2.0` | dependency |
 
-Dev, only to run the specs: `vitest`, `jsdom`, `@testing-library/react`,
-`@testing-library/jest-dom`, `@testing-library/user-event`.
+`radix-ui` is one package for every primitive: Dialog, Drawer, Tooltip,
+Popover, Switch, Slider and Field import from it. `clsx` and
+`tailwind-merge` are `cn`'s.
+
+Not in the table, so they are not installed blind:
+
+- The Tailwind components need Tailwind v4: `tailwindcss` and
+  `@tailwindcss/vite` at `^4.3.0`, as dev dependencies. A project that
+  uses only the plain components does not need them.
+- The specs need `vitest`, `jsdom`, `@testing-library/react`,
+  `@testing-library/jest-dom` and `@testing-library/user-event`, as dev
+  dependencies. Any current version; the proof ran on vitest 5.1.1 and
+  jsdom 31.0.1.
 
 ## What to wire
 

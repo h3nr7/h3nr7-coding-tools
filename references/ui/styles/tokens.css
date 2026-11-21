@@ -196,7 +196,7 @@
      weight only has to hold it legible. Bold at 13px is shouting. */
   --weight-medium: 500;
   /* The step between regular and bold. For text that has to lead a group
-     without shouting — a name over its captions. */
+     without shouting: a name over its captions. */
   --weight-semibold: 600;
   --weight-bold: 700;
 

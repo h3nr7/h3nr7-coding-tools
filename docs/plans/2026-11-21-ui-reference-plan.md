@@ -180,8 +180,8 @@ copied spec passes in the proof project.
       `grep -nw "Button\|Sidebar\|lucide\|FONT_HOSTS" references/ui/index.ts`
       finds nothing.
 - [ ] In the proof project with `references/ui` copied to `src/ui`,
-      `pnpm test` reports 9 test files passed (the 8 copied specs and the
-      harness's) and 0 failed.
+      `pnpm test` reports 10 test files passed (the 8 copied specs, the
+      harness's smoke spec and the page spec) and 0 failed.
 - [ ] `pnpm build` exits 0, so the copied files and specs type-check
       under the scaffold's `tsconfig.json`.
 
@@ -249,7 +249,7 @@ imported.
       followed by `Baskerville`, contains `.bg-ink` and `.bg-popover`
       (the theme registered the utilities), and does not contain
       `mrs-eaves`.
-- [ ] `pnpm test` still reports 9 files passed.
+- [ ] `pnpm test` still reports 10 files passed.
 
 **Depends on:** task 2.
 

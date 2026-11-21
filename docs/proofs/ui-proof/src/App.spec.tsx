@@ -16,10 +16,10 @@ beforeAll(() => {
   }
 });
 
-// The harness's own smoke test: jsdom, Testing Library and jest-dom are
-// wired. If a copied spec fails later, it is the copy and not the setup.
-describe('the proving ground', () => {
-  it('renders the page', () => {
+// The page with Controls and Dialog on it renders. This needs the reference
+// copied to src/ui; the harness's own check is smoke.spec.tsx.
+describe('the page', () => {
+  it('renders with Controls and Dialog on it', () => {
     render(<App />);
     expect(screen.getByRole('heading', { name: 'UI proof' })).toBeInTheDocument();
   });

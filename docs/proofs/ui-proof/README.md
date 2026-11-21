@@ -24,16 +24,18 @@ cd /tmp/ui-proof
 #    README names; the tool versions are what the proof was run on.
 pnpm install
 
-# 3. The harness's own smoke spec, before the reference goes in.
-pnpm test
+# 3. The harness's own smoke spec, before the reference goes in. It imports
+#    nothing from src/ui, so it runs on the bare scaffold.
+pnpm vitest run src/smoke.spec.tsx
 #    Expect: Test Files 1 passed (1), Tests 1 passed (1).
 
 # 4. The reference, copied in.
 cp -r <h3nr7-coding-tools>/references/ui src/ui
 
-# 5. Every spec: the eight copied ones and the smoke spec.
+# 5. Every spec: the eight copied ones, the smoke spec, and App.spec.tsx,
+#    which renders the page with Controls and Dialog on it.
 pnpm test
-#    Expect: Test Files 9 passed (9), 0 failed.
+#    Expect: Test Files 10 passed (10), 0 failed.
 
 # 6. Type-check and build, with Controls and Dialog rendered in
 #    src/App.tsx and the four stylesheets imported in src/index.css.
@@ -54,9 +56,9 @@ pnpm dev
 ```
 
 `src/App.tsx` and `src/index.css` are committed in the state step 6
-needs, so steps 4 to 7 need no editing. Step 3 runs the same `App.tsx`,
-which imports from `./ui`, so it fails until step 4 has run; run step 3
-on the bare scaffold by checking out the task 1 commit, or skip it.
+needs, so steps 4 to 7 need no editing. `App.tsx` imports from `./ui`,
+so `pnpm test` as a whole and `pnpm build` only pass once step 4 has
+run; step 3 names the one spec that does not need it.
 
 ## Results
 
@@ -94,3 +96,13 @@ resolved on the day.
   because `.gitignore` lists it, so `index.css` has `@source './ui';`;
   Radix's slider needs a `ResizeObserver` stub in jsdom, so
   `App.spec.tsx` has one.
+
+### After review (2026-11-21)
+
+- `App.spec.tsx` had become both the harness check and the page render,
+  and could not run before the copy. `smoke.spec.tsx` is the harness
+  check now and imports nothing from `src/ui`; step 3 runs it alone.
+- `pnpm vitest run src/smoke.spec.tsx` on the bare scaffold: Test Files
+  1 passed (1), Tests 1 passed (1).
+- With the reference copied in: `pnpm test` → Test Files 10 passed (10),
+  Tests 100 passed (100); `pnpm build` → exit 0.
