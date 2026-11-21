@@ -1,0 +1,64 @@
+/*
+ * The Tailwind theme for the tokens. Import it after tokens.css, in a project
+ * that uses Tailwind v4; a project without Tailwind does not need it.
+ *
+ * Tailwind v4 reads its theme from CSS, so the tokens become utilities without
+ * a config file and without being duplicated. One definition, two consumers:
+ * `text-ink` in a class, `var(--colour-ink)` from a canvas or a print sheet.
+ * Tailwind only emits a utility for a colour it has been told about, so
+ * without this file `bg-ink`, `bg-popover` and the rest of what Popover,
+ * Switch, Slider and Controls use emit nothing, and nothing says so.
+ *
+ * `inline`, so a utility carries `var(--colour-ink)` itself rather than a
+ * `--color-ink` the stylesheet would also have to define. The `--colour-*` and
+ * shadcn aliases they point at are tokens.css's.
+ */
+@theme inline {
+  --color-page: var(--colour-page);
+  --color-surface: var(--colour-surface);
+  --color-ink: var(--colour-ink);
+  --color-ink-muted: var(--colour-ink-muted);
+  --color-ink-faint: var(--colour-ink-faint);
+  --color-line: var(--colour-line);
+  /* The site's emphasis colour (`--colour-accent`). Not `accent`: that name is
+     shadcn's hover surface, below, and its components use it as such. */
+  --color-emphasis: var(--colour-accent);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+  --font-mono: var(--font-mono);
+
+  /*
+   * shadcn's colour names, so `bg-popover` and `border-border` are real
+   * utilities and its components can be pasted in unedited.
+   *
+   * The values are aliases defined once in `tokens.css` — see the block there
+   * for why they are not literals. Registered here because Tailwind v4 only
+   * emits a utility for a custom property it has been told about.
+   */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  /*
+   * `accent` is shadcn's: a hover and focus fill. It used to be registered as
+   * `accent-hover`, with `accent` meaning the site's emphasis colour — which
+   * read well and broke every pasted component, because upstream writes
+   * `hover:bg-accent hover:text-accent-foreground` (Button's ghost and outline,
+   * every Select item) and got a near-ink fill under ink text. Nothing used
+   * either utility when they were swapped; the emphasis colour is `emphasis`.
+   */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+}
