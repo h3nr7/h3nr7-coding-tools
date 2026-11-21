@@ -175,9 +175,10 @@
    * Leading is inverse to size: the bigger the type, the less it needs.
    *
    * `--leading-display` is below 1, which is a deliberate display setting and
-   * not a value to reach for anywhere else. At 48pt the lines still clear each
-   * other because Mrs Eaves has a small x-height; the same 0.95 on body text
-   * would collide ascenders with descenders and clip both.
+   * not a value to reach for anywhere else. It was tuned to a display face
+   * with a small x-height; with the system stack in this reference, check a
+   * two-line heading by eye and raise it if ascenders meet descenders. The
+   * same 0.95 on body text would collide them and clip both.
    */
   --leading-display: 0.95;
   --leading-tight: 1.15;

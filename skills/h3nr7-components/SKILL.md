@@ -122,8 +122,16 @@ from `<skill base>/../../references/webgpu-canvas/README.md`, and name
 the dependency that calls for it. A project with neither needs no alias;
 say nothing about it.
 
+Then the spec files that came with the copy. If the project has no test
+runner (no `vitest` or `jest` in `package.json`), say so and give the two
+ways out: add `vitest` as a dev dependency (and, where the README says
+so, Testing Library), or exclude `**/*.spec.*` in the project's
+`tsconfig`. Without one of them the type-check fails on the specs'
+imports. Do neither yourself; it is the user's choice.
+
 **Gate:** the wiring text is in front of the user, with the alias recipe
-when it applies.
+when it applies and the spec-file note when the project has no test
+runner.
 
 ## 6. Record
 

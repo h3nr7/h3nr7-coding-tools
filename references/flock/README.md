@@ -9,8 +9,10 @@ stripped to the flock itself so any React Three Fiber project on WebGPU can
 copy it in.
 
 Eleven files, self-contained. The only imports that leave the folder are
-`react`, `@react-three/fiber`, `three/webgpu` and `three/tsl`, and `three`
-in one spec.
+`react`, `@react-three/fiber`, `three/webgpu` and `three/tsl`; the two
+specs also import `vitest`, and `forces.spec.ts` imports `three` to check
+the maths against three's own transforms (in a project with the alias on,
+that is the WebGPU build too, and the specs still pass).
 
 | File | What it holds |
 |---|---|
@@ -56,7 +58,7 @@ From `index.ts`:
 | `opacity` | 0.075 | every bird's alpha |
 | `fade` | none | a `{ current }` ref, 0..1, multiplied into the opacity, read every frame |
 | `pointer` | `true` | whether the pointer repels; false keeps the strength at 0 |
-| `repellerRadius` | 70 | boid units from the ray a bird feels it |
+| `repellerRadius` | 70 | boid units from the ray a bird feels it. Passed to `Boids` as `preyRadius`, so it is also the reach of the default predator attractor at (0, 30, 0) |
 | `repellerStrength` | 1 | how hard the ray pushes |
 | `attractor`, `repeller` | `null` | a `FlockForce` each, screen-relative, eased in and out; null is off |
 | `alignment`, `speed` | 0.5 | passed to `Boids` |
@@ -139,14 +141,18 @@ the geometry say nothing about where the birds are. Leave
 
 ## Dependencies
 
-| Package | Range | Why |
+| Package | Range | Kind |
 |---|---|---|
-| `three` | `^0.187.0` | `three/webgpu` and `three/tsl` |
-| `@types/three` | `^0.187.0` (dev) | three ships no types |
-| `@react-three/fiber` | `^9.8.0` | `useFrame`, `useThree`, the JSX elements |
-| `react`, `react-dom` | `^19.2.0` | |
+| `three` | `^0.187.0` | dependency |
+| `@types/three` | `^0.187.0` | dev dependency |
+| `@react-three/fiber` | `^9.8.0` | dependency |
+| `react` | `^19.2.0` | dependency |
+| `react-dom` | `^19.2.0` | dependency |
 
-The specs need `vitest` as a dev dependency.
+`three` is for `three/webgpu` and `three/tsl`, and ships no types, hence
+`@types/three`. The two spec files need `vitest` as a dev dependency; a
+project without a test runner can exclude `**/*.spec.*` in its tsconfig
+instead, or the type-check fails on their imports.
 
 ## Needs a WebGPU canvas
 
