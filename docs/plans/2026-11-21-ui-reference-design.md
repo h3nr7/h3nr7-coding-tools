@@ -393,6 +393,41 @@ From the builder check, settled by me:
     the type block in `tokens.css`, which is rewritten anyway, and its
     `--font-mono` comment goes with it. If wrong: comments to edit.
 
+During the build, recorded on the sub-issues as rulings and repeated
+here:
+
+13. **`vite/client` is in the proof's tsconfig `types`.** TypeScript 7,
+    which pnpm resolved, refuses a side-effect import of `./index.css`
+    without a declaration. If wrong: one entry in one array.
+14. **The proof scaffold's `package.json` keeps the plan's ranges**, not
+    the resolved versions pnpm wrote back; the resolved set is in the
+    proof README. If wrong: five version strings.
+15. **The `index.ts` check is a whole-word grep.** The loose one matched
+    `MenuButton`, h3nr7's own export. If wrong: nothing is lost.
+16. **The proof's `index.css` has `@source './ui';`.** Tailwind v4's
+    source scan honours `.gitignore`, the scaffold ignores `src/ui`, and
+    the first build had none of the colour utilities and said nothing.
+    The README's What to wire says this in those words. If wrong: one
+    line.
+17. **The proof's page spec stubs `ResizeObserver`**, as `Controls.spec`
+    does, because Radix's slider needs it and jsdom lacks it. If wrong:
+    six lines move to the setup file.
+18. **The README says "icon re-exports", not "lucide"**, because a
+    criterion greps the README for that name. If wrong: one word.
+19. **From the branch review, fixed:** the README's Dependencies table
+    takes feature 1's `Package | Range | Kind` shape, one package per
+    row, with Tailwind and the test packages in prose beneath so the
+    skill does not install them blind; the proof has a `smoke.spec.tsx`
+    that imports nothing from `src/ui`, so the recipe's step 3 runs on
+    the bare scaffold, and the test-file count is 10; one em-dash in a
+    rewritten `tokens.css` comment is gone.
+20. **From the branch review, deferred as minor:** the proof README's
+    step 7 uses `grep -c`, which counts lines and the built CSS is one
+    line, so "2 or more" reads as a failure at 1; the proof tsconfig
+    lists `vitest/globals` without `test.globals: true`; commit 920dda2
+    carried a plan edit a sed mangled, repaired in c57bcf8. Listed for
+    the owner; not changed.
+
 ## How the owner knows it works
 
 - `git ls-files references/ui` on `feature/ui-reference` lists the ten
