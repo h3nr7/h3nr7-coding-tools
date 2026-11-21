@@ -1,1 +1,13 @@
 @import 'tailwindcss';
+
+/* Tailwind v4 scans the project for class names but skips anything
+   .gitignore lists, and this scaffold ignores src/ui so the copy is never
+   committed. Without this line Popover, Switch, Slider and Controls build
+   with none of their utilities and nothing reports it. */
+@source './ui';
+
+/* The reference's styles, in this order: the tokens first, then the theme
+   that turns them into Tailwind utilities, then ScrambleText's structure. */
+@import './ui/styles/tokens.css';
+@import './ui/styles/theme.css';
+@import './ui/styles/scramble.css';

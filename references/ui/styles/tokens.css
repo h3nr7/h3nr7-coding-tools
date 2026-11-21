@@ -1,0 +1,584 @@
+/*
+ * Design tokens.
+ *
+ * **The values here are placeholders and are meant to be.** The visual design
+ * of h3nr7.com is deferred to the next version; what phase 1 owes it is the
+ * *shape* — a single place where colour, type and spacing are named, so the
+ * design pass changes values rather than hunting through components.
+ *
+ * Everything is a CSS custom property rather than a Tailwind config, so tokens
+ * are readable at runtime, themeable per element, and usable from plain CSS —
+ * including the two places Tailwind cannot reach: the WebGL canvas, which needs
+ * to sample colours as numbers, and a print stylesheet.
+ *
+ * Dark mode follows the system by default and can be forced either way with
+ * `data-theme` on the root, so a later toggle needs no CSS changes.
+ */
+
+:root {
+  /*
+   * Tell the browser which way round the page is.
+   *
+   * Not decoration: this is what themes the parts of the page the stylesheet
+   * cannot reach — scrollbars, the default form controls, spinner buttons,
+   * and the canvas the browser paints before any CSS has loaded. Without it a
+   * dark page keeps a bright white scrollbar down its edge and flashes white
+   * on first paint, both of which read as a bug rather than as a theme.
+   *
+   * It is declared in all three theme blocks below for the same reason the
+   * palette is: whichever one wins has to carry the complete answer.
+   */
+  color-scheme: light;
+
+  /* ---------------------------------------------------------------- colour */
+  /* Named by role, never by appearance: `--colour-ink` survives a redesign,
+     `--colour-black` becomes a lie the first time the theme changes. */
+  /*
+   * The ground is off-white; a surface raised off it is white.
+   *
+   * That is the direction dark mode already runs in — `--colour-surface` there
+   * is lighter than `--colour-page` — so this makes "surface" mean the same
+   * thing in both themes: the plane that sits above the paper, not merely a
+   * second grey. The canvas rests on `--colour-page`, which is why the ground
+   * cannot be pure white: it left every chrome control painted in the page
+   * colour sitting on the canvas as a visibly brighter patch.
+   */
+  --colour-page: #f6f6f7;
+  --colour-surface: #ffffff;
+  /*
+   * A control with the pointer on it.
+   *
+   * Its own token because the palette no longer has a spare grey: `surface`
+   * became the white a control rests at, so hover had nowhere left to go, and
+   * `--colour-line` is a border weight rather than a fill. Darker than the page
+   * as well as the surface, so a hovered control reads as pressed into the
+   * paper rather than merging with it.
+   */
+  --colour-hover: #e8e8ea;
+  --colour-ink: #17171a;
+  --colour-ink-muted: #595a5f;
+  --colour-ink-faint: #8a8b90;
+  --colour-line: #e2e2e5;
+  --colour-accent: #17171a;
+  --colour-accent-ink: #ffffff;
+  /*
+   * Something is wrong: an invalid field, a destructive action.
+   *
+   * The palette's only hue, and it arrived with the `/internal` console, whose
+   * form marks a field the API refused. It is never the only signal — the
+   * message beside the field says what is wrong — but a red edge is how a
+   * reader finds which field to look at. Both values clear 4.5:1 against their
+   * page as text, so an error can be written in it as well as drawn.
+   */
+  --colour-danger: #b42318;
+  /*
+   * Focus, in ink.
+   *
+   * It was `#2563eb` — Tailwind's blue-600, and the only colour on a site that
+   * is otherwise black, white and four greys. Nothing chose it; it is what a
+   * focus token defaults to, and it read as the browser's own ring left
+   * switched on rather than as part of the design.
+   *
+   * `var(--colour-ink)` rather than a second hex, and that is what keeps the
+   * promise the old comment made about staying visible against every surface:
+   * custom properties resolve at use, so this follows `--colour-ink` into the
+   * dark palette on its own and the ring inverts with everything else. The two
+   * dark blocks below used to restate a blue of their own and no longer need to.
+   *
+   * It stays its own token rather than being written as `--colour-ink` at the
+   * point of use: focus is a role, and a site that later wants its ring to
+   * differ from its text should have one place to say so.
+   *
+   * **Ink is safe even on the filled controls**, which is the case worth
+   * checking before making a ring the same colour as a button. `outline-offset`
+   * is positive, so the ring is drawn OUTSIDE the border box — on the page
+   * ground, never on the control — so `.h3-cta`, which is an ink rectangle,
+   * gets an ink ring on white rather than an invisible one on itself.
+   */
+  --colour-focus: var(--colour-ink);
+
+  /*
+   * The flock's palette: a comma-separated LIST, one colour per kind of bird,
+   * read by the canvas (`visuals/flock/palette.ts`) and dealt out at random.
+   *
+   * Written in terms of the ink tokens for the reason `--colour-focus` is: a
+   * custom property resolves at use, so this inverts with the theme on its own
+   * and neither dark block needs to restate it. Any colour three's `Color`
+   * parses works here (hex, `rgb()`, a name). One token, not one per colour,
+   * so the palette can grow or shrink without the canvas changing.
+   */
+  --colour-flock: var(--colour-ink), var(--colour-ink-muted), var(--colour-ink-faint);
+
+  /* ------------------------------------------------------------------ type */
+  /*
+   * Three families, as system stacks. Nothing here loads a face or a kit.
+   *
+   * The tokens keep their names so every component and rule that says
+   * `var(--font-display)` keeps working. A project that serves a face puts it
+   * at the front of the stack in its own CSS, after this file:
+   *
+   *   :root { --font-display: 'My Serif', Baskerville, ...; }
+   *
+   * The display fallbacks are Baskerville-family first because they are
+   * metrically closer to a Baskerville revival than Georgia, whose x-height
+   * is large; Georgia is left out for that reason.
+   */
+  --font-display: Baskerville, 'Libre Baskerville', 'Times New Roman', Times, serif;
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* A system mono stack is the default; put a face in front of it to use one. */
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  /* A modular scale at 1.25. Named by step rather than by use, so a heading
+     can move a step without renaming the token. */
+  --text-2xs: 0.694rem;
+  --text-xs: 0.833rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.563rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-4xl: 3.052rem;
+
+  /*
+   * The landing statement. Off the modular scale on purpose: it is a size that
+   * was asked for, not a step that was derived.
+   *
+   * **48pt is 64px is 4rem** — CSS `pt` is 1/72in and CSS `px` is 1/96in, so
+   * the ratio is fixed at 4/3 regardless of the display. Written in rem rather
+   * than pt so it still responds to a reader who has raised their default font
+   * size; a hard `48pt` ignores that setting completely.
+   *
+   * Fluid below 1280px, interpolated to land exactly on 4rem at 1280px. Every
+   * term is double the earlier 24pt setting, so the curve keeps its shape and
+   * only the scale changes.
+   *
+   * The 3rem floor depends on `--leading-display`. At a 1.5 leading this same
+   * floor made the landing 887px tall on a 375×812 phone — taller than the
+   * viewport. At 0.95 it fits with room to spare. **If the leading ever
+   * loosens, re-check this on a phone**: the two settings are only safe
+   * together.
+   */
+  --text-landing: clamp(3rem, 2.58rem + 1.76vw, 4rem);
+
+  /*
+   * The name above the statement, at 24pt — the size the statement used to be.
+   *
+   * Its own token because it is NOT the statement. Both once read
+   * `--text-landing`, so doubling that to 48pt took the name with it and the
+   * two came out identical in size: no hierarchy, just two blocks of the same
+   * display type. The name is a label; the sentence under it is the page.
+   */
+  --text-landing-name: clamp(1.5rem, 1.29rem + 0.88vw, 2rem);
+
+  /*
+   * Leading is inverse to size: the bigger the type, the less it needs.
+   *
+   * `--leading-display` is below 1, which is a deliberate display setting and
+   * not a value to reach for anywhere else. At 48pt the lines still clear each
+   * other because Mrs Eaves has a small x-height; the same 0.95 on body text
+   * would collide ascenders with descenders and clip both.
+   */
+  --leading-display: 0.95;
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+  --leading-loose: 1.7;
+
+  /*
+   * Nominal weights. A face may not draw every step: the CSS Fonts matching
+   * rules then pick the nearest it has, so 300 can render as 100 and 500 as
+   * 400 on a face served at 100, 400, 600 and 700 only. Check the face in use
+   * before adding a step on the assumption that it exists.
+   */
+  --weight-light: 300;
+  --weight-regular: 400;
+  /* For small UI text, where the size is doing the work of receding and the
+     weight only has to hold it legible. Bold at 13px is shouting. */
+  --weight-medium: 500;
+  /* The step between regular and bold. For text that has to lead a group
+     without shouting — a name over its captions. */
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* --------------------------------------------------------------- spacing */
+  /* A 4px base, so every value is a multiple and nothing lands on a half
+     pixel at common zoom levels. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Doubling, so a step up is always the next token rather than a new number. */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  /* For panels rather than controls: the article hover card, which is a small
+     picture and wants a corner you can see at 220px wide. */
+  --radius-xl: 16px;
+
+  /*
+   * ------------------------------------------------------------- WIDTHS
+   *
+   * Every max-width on the site comes from one of these four. Change them
+   * here, not at a call site — a hard-coded width in a component is the thing
+   * that makes a layout impossible to retune later.
+   *
+   *   --measure-page      the outer page column. Centred; everything sits
+   *                       inside it and stays left-aligned to its edge.
+   *   --measure           running text: articles, the feed, the CV.
+   *   --measure-landing   the landing block, centred on itself. The only thing
+   *                       setting the statement's line length.
+   *   --measure-form      inputs, which want to be narrower than their prose.
+   *
+   * `ch` for running text and `rem` for the two layout widths: a reading column
+   * should track the size of the type in it, a page column should not.
+   *
+   * **`ch` is a trap on anything but the element the type is set on.** It
+   * resolves against that element's own font-size, so the same 34ch is ~574px
+   * at 2rem and ~1149px at 4rem, and on a wrapper inheriting 16px body text it
+   * computes to about 300px and strangles the display type inside it. Both
+   * landing-centring bugs came from this; see the note above `.h3-landing-name`
+   * in the web app's `app.css`.
+   */
+
+  /*
+   * The outer page column. The feed and articles are unaffected by it — they
+   * carry --measure — so in practice this holds the landing.
+   *
+   * It no longer decides how long the statement's lines are; `--measure-landing`
+   * does, and this only has to be wide enough not to get in its way. That is
+   * the point of the relationship below: a column that can bind on the landing
+   * is a second, competing cap, and two caps is what broke the centring twice.
+   *
+   * Always 4rem wider than `--measure-landing`, at every breakpoint: 2rem of
+   * that is this column's own padding and the other 2rem is slack, so the
+   * landing is never clipped by the thing it sits in. Rises to 76rem and then
+   * 94rem; see the breakpoints below the palette.
+   */
+  --measure-page: 64rem;
+
+  /* ~68 characters of body text — the usual comfortable reading line. */
+  --measure: 68ch;
+
+  /*
+   * The landing block, so it can be centred on its own rather than on the page.
+   *
+   * `--measure-page` is a column the landing is left-aligned inside, which is
+   * right until the viewport is much wider than it: at 2432px the column is
+   * symmetric (704px either side, measured) but the type inside it sits against
+   * the left edge, and the page reads as shifted left even though no box is
+   * off-centre. Narrower than the page column and auto-margined, the block
+   * centres and the wordmark keeps the statement's left edge.
+   *
+   * `rem`, not `ch`, and not `fit-content`. `ch` here would resolve against the
+   * 16px body text this element inherits — the trap the section header warns
+   * about. `fit-content` looks like the right answer and provably is not: it
+   * resolves to `min(max-content, available)`, and the statement's max-content
+   * is one unwrapped line, so it clamps straight back to the full column and
+   * changes nothing. Measured in the browser before this token existed.
+   *
+   * Three steps — 60rem, then 72rem at 96rem, then 90rem at 120rem. The
+   * breakpoints are below the palette, along with why `--measure-page` has to
+   * move with each one.
+   */
+  --measure-landing: 60rem;
+
+  /* Forms. A text input as wide as a paragraph is harder to scan, not easier. */
+  --measure-form: 24rem;
+
+  /* --------------------------------------------------------------- motion */
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --z-canvas: 0;
+  --z-content: 10;
+  /*
+   * Fixed site chrome: the menu button, and the sound switch when there is no
+   * menu. Above the content because it is pinned to the viewport and the
+   * content scrolls under it — a page column wide enough to reach the corner
+   * would otherwise cover it, and, since the content is opaque and hit-
+   * testable, swallow the click as well as the pixels.
+   *
+   * That is not hypothetical: this tier exists because the menu button was sitting
+   * at a hand-written `z-index: 1`, chosen against the canvas at 0 without the
+   * content at 10 in the picture. Above about 1150px the page column stopped
+   * short of the corner and it looked fine; at every width below that — every
+   * laptop, tablet and phone — `header.h3-landing` covered the button and the
+   * menu could not be opened at all.
+   *
+   * Below the hovercard on purpose. That one is dragged around by the cursor,
+   * so it passes over this corner constantly, and a preview briefly crossing
+   * the chrome is ordinary. Being unable to reach the chrome is not.
+   */
+  --z-chrome: 20;
+  /* Follows the cursor, so it sits above the page but below anything modal —
+     a dialog must never have a tooltip floating over its backdrop. */
+  --z-hovercard: 50;
+  --z-overlay: 100;
+
+  /* ------------------------------------------------- shadcn compatibility */
+  /*
+   * shadcn's semantic names, so its components paste in verbatim.
+   *
+   * Every one of these is an ALIAS rather than a value. That is the whole
+   * point: the site has three theme blocks — `:root`, the
+   * `prefers-color-scheme` media query, and `[data-theme='dark']` — and a
+   * fourth set of literal colours would have to be kept in step with all of
+   * them by hand. Custom properties resolve at use, so `--popover` following
+   * `--colour-page` is automatically right in every theme, including ones
+   * added later.
+   *
+   * The mapping is opinionated where shadcn's vocabulary is finer than this
+   * site's. shadcn distinguishes `muted` (a quiet surface) from `accent` (a
+   * hover surface) and this palette has one `surface`, so both point at it —
+   * correct today, and the place to split them if the design ever needs two.
+   *
+   * `--accent` here is shadcn's hover background and is NOT `--colour-accent`,
+   * which is this site's emphasis colour. Same word, different jobs; they are
+   * kept apart by the `--colour-` prefix.
+   */
+  --background: var(--colour-page);
+  --foreground: var(--colour-ink);
+  --card: var(--colour-page);
+  --card-foreground: var(--colour-ink);
+  --popover: var(--colour-page);
+  --popover-foreground: var(--colour-ink);
+  --primary: var(--colour-ink);
+  --primary-foreground: var(--colour-page);
+  --secondary: var(--colour-surface);
+  --secondary-foreground: var(--colour-ink);
+  --muted: var(--colour-surface);
+  --muted-foreground: var(--colour-ink-muted);
+  --accent: var(--colour-surface);
+  --accent-foreground: var(--colour-ink);
+  --border: var(--colour-line);
+  --input: var(--colour-line);
+  /* Focus is its own token here for the reason stated above: it must stay
+     visible against every surface, so it is not derived from the accent. */
+  --ring: var(--colour-focus);
+  --destructive: var(--colour-danger);
+}
+
+/*
+ * The width breakpoints, and the site's only two.
+ *
+ * Every other query in this file is a feature query — dark mode, reduced
+ * motion, hover. These are the first things on the site that change because of
+ * how wide the window is. What they do is let the landing grow on a large
+ * display rather than letting the margins grow: a block fixed at 60rem sits
+ * well up to about this width and then starts to look stranded in the middle
+ * of the screen.
+ *
+ *   below 96rem    landing 60rem   page 64rem
+ *   96rem+         landing 72rem   page 76rem
+ *   120rem+        landing 90rem   page 94rem
+ *
+ * **The two widths are Tailwind's, not ours.** 96rem is its `2xl`; 120rem is
+ * the `3xl` most projects add, and is 1920px — a full-HD display. They were
+ * reached for as "about 1560" and "about 2000" and then snapped to the scale
+ * this app already builds against, so a utility class and a hand-written rule
+ * break at the same place instead of 24px apart.
+ *
+ * In `rem` rather than `px` for the same reason Tailwind v4 moved its own
+ * breakpoints there: a px media query ignores the reader's font size, so a
+ * page zoomed for legibility keeps the layout of a screen that size and not
+ * the layout of the text it is actually showing.
+ *
+ * **Both tokens move at each step, and that is not a stylistic pairing.** The
+ * landing lives inside the page column and is clipped by it — raising
+ * `--measure-landing` alone to 64rem was measured at a 992px block rather than
+ * 1024px, because `.h3-home` offers its own width less 2rem of padding. So the
+ * column is held 4rem above the landing throughout: 2rem for that padding and
+ * 2rem of slack. Change one of these and change its pair.
+ *
+ * A `clamp()` would make this fluid and need no breakpoints at all. Steps were
+ * chosen deliberately: named widths are easier to reason about than an
+ * interpolation, and the type only needs to be right at the sizes people
+ * actually use rather than at every pixel between them.
+ */
+/* Tailwind's 2xl. */
+@media (min-width: 96rem) {
+  :root {
+    --measure-page: 76rem;
+    --measure-landing: 72rem;
+  }
+}
+
+/* 1920px: full HD, and the 3xl most Tailwind projects add. */
+@media (min-width: 120rem) {
+  :root {
+    --measure-page: 94rem;
+    --measure-landing: 90rem;
+  }
+}
+
+/* System preference, unless the root says otherwise. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --colour-page: #0e0e10;
+    --colour-surface: #17171a;
+    /* Lighter again than the surface, the same direction hover moves in light. */
+    --colour-hover: #24242a;
+    --colour-ink: #f2f2f3;
+    --colour-ink-muted: #a6a7ac;
+    --colour-ink-faint: #6f7076;
+    --colour-line: #2a2a2f;
+    --colour-accent: #f2f2f3;
+    --colour-accent-ink: #0e0e10;
+    --colour-danger: #f97066;
+    /* No `--colour-focus` here: it is `var(--colour-ink)`, which this block has
+       already flipped, and custom properties resolve at use rather than at
+       declaration. One less value to keep in step. */
+  }
+}
+
+/* An explicit choice wins in both directions. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --colour-page: #0e0e10;
+  --colour-surface: #17171a;
+  /* Lighter again than the surface, the same direction hover moves in light. */
+  --colour-hover: #24242a;
+  --colour-ink: #f2f2f3;
+  --colour-ink-muted: #a6a7ac;
+  --colour-ink-faint: #6f7076;
+  --colour-line: #2a2a2f;
+  --colour-accent: #f2f2f3;
+  --colour-accent-ink: #0e0e10;
+  --colour-danger: #f97066;
+  /* As above: `--colour-focus` follows `--colour-ink` and needs no restating. */
+}
+
+/*
+ * Focus.
+ *
+ * `:focus-visible` rather than `:focus`, so a mouse click does not leave a ring
+ * behind but a keyboard user always sees where they are. Declared once, here,
+ * because a component that quietly drops it is the single easiest way to make a
+ * site unusable by keyboard — and the rule that puts it back should not have to
+ * be repeated in every component.
+ *
+ * `a` and `button` are handled by the rule below and get no ring at all.
+ * Everything here keeps one: a text input, a select and a `summary` have no
+ * other affordance to fall back on.
+ *
+ * **`[tabindex]` excludes `-1`, and that exclusion is the whole point of
+ * spelling the attribute out twice.** A positive or zero `tabindex` is
+ * something the site deliberately put in the tab order, and a keyboard user
+ * reaching it needs to see where they are. `tabindex="-1"` is the opposite: it
+ * means focusable by SCRIPT and not by tab, so a ring on one is never a
+ * keyboard user arriving — it is code having moved focus.
+ *
+ * This site has exactly one, and it was drawing a 2px ink rectangle around the
+ * title of every article. `FocusOnNavigate` sets `tabindex="-1"` on the new
+ * page's heading and focuses it so a screen reader announces where the
+ * navigation landed, then removes the attribute on blur. The announcement is
+ * the entire purpose; the outline was a side effect of the element briefly
+ * matching this selector, and on a full-width `h1` it read as a black border
+ * round the masthead.
+ *
+ * What this costs, stated plainly: a sighted keyboard user now gets no visual
+ * mark of where a client-side navigation put them. The scroll position and the
+ * announcement still do that work, and this was judged the better trade — but
+ * it is a trade, not a free win.
+ */
+:where(
+  input,
+  select,
+  textarea,
+  summary,
+  [tabindex]:not([tabindex='-1'])
+):focus-visible {
+  outline: 2px solid var(--colour-focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Links, buttons and script-focused elements take no ring.
+ *
+ * A ring around a word in a line of prose, or around a link-out already sitting
+ * in a card's corner, was judged to cost more than it bought on a site whose
+ * whole register is hairlines and ink.
+ *
+ * `[tabindex='-1']` is here for a different reason and it is the more instructive
+ * one. That value means focusable by SCRIPT and not by tab, so a ring on one is
+ * never a keyboard user arriving — it is code having moved focus.
+ * `FocusOnNavigate` is the site's only user of it: on every client-side
+ * navigation it sets the attribute on the new page's heading and focuses it so a
+ * screen reader announces where you landed, then removes it on blur. The
+ * announcement is the whole purpose; the outline was a side effect of the
+ * element briefly matching the rule above, and on a full-width `h1` it drew a
+ * black rectangle round the masthead of every article.
+ *
+ * **It has to be an explicit `none`, and excluding a selector from the rule
+ * above is NOT the same thing — measured twice, both times after assuming
+ * otherwise.** With no site rule matching, the browser's own `:focus-visible`
+ * default takes over and paints `outline: auto` in the UA's focus colour: in
+ * Chrome that measured `auto 0.67px rgb(16,16,16)`, a near-black ring heavier
+ * than the one this site was drawing. Omitting does not remove a ring, it
+ * swaps ours for the platform's — which is the opposite of the intent, and the
+ * harder version to notice because it only appears on the browser you are not
+ * testing in. The rule above still spells out `:not([tabindex='-1'])` so that a
+ * `tabindex="0"` widget, which IS in the tab order, keeps its ring.
+ *
+ * All the selectors are `:where()`, so all contribute zero specificity and this
+ * wins on source order alone — which is fine while they sit together in one
+ * file, and is the reason they should stay together.
+ *
+ * What has to remain true for this to be safe is that EVERY link and button
+ * carries its own `:focus-visible` treatment, paired with its `:hover` one.
+ * They do today: the underline rules (`.h3-landing-links a`, `.h3-cv-footer a`,
+ * `.h3-article-body a`) bring a hairline up to ink, and the control rules
+ * (`.h3-button`, `.h3-cta`, `.h3-card-out`, `.h3-contact-icon`,
+ * `.h3-navi-sound`) change ground.
+ *
+ * Read that as a standing obligation rather than a description. A new link or
+ * button with only a `:hover` rule has no keyboard affordance at all, and
+ * nothing in the build will say so. Two of those treatments are also weaker
+ * than WCAG 2.2 SC 2.4.11 asks for — the ground change measures 1.22:1 against
+ * a required 3:1 — which is the known cost of this decision, not an oversight.
+ */
+:where(a, button, [tabindex='-1']):focus-visible {
+  outline: none;
+}
+
+/*
+ * No `border-radius` in that rule, deliberately.
+ *
+ * It used to set `--radius-sm` to soften the outline's corners, and the cost
+ * was that focusing anything reshaped it: `:where()` contributes no
+ * specificity, but this file is unlayered and Tailwind's utilities are not, so
+ * it beat them outright. A `rounded-full` switch snapped to a 2px rectangle
+ * the moment it took focus, and so did the round switch beside it.
+ *
+ * It was never needed. An `outline` already follows the element's own
+ * `border-radius` in every browser this site supports, so a rounded control
+ * gets a rounded ring for free and a square one gets a square ring — which is
+ * the correct answer in both cases, and the one this rule was overriding.
+ */
+
+/*
+ * Motion.
+ *
+ * A blanket reduction rather than per-animation opt-outs: anything added later
+ * is covered by default, and forgetting is not an option. `0.01ms` rather than
+ * `0` so animation and transition end events still fire and JavaScript waiting
+ * on them does not hang.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
