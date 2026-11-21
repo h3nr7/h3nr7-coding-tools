@@ -1,14 +1,14 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "h3nr7-coding-tools",
-  "description": "h3nr7's coding skills for Claude Code.",
+  "description": "h3nr7's coding skills and reference components for Claude Code.",
   "owner": {
     "name": "h3nr7"
   },
   "plugins": [
     {
       "name": "h3nr7-coding-tools",
-      "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built; or a quick fix as one issue carrying its plan, built straight through.",
+      "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built; or a quick fix as one issue carrying its plan, built straight through. Also reference components, such as the WebGPU canvas and the flock, that the h3nr7-components skill copies into a project.",
       "source": "./",
       "category": "development"
     }

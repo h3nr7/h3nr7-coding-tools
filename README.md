@@ -2,7 +2,8 @@
 
 Claude Code skills for designing and planning software work, with the
 work tracked in Linear, and for quick fixes that need a ticket but not a
-design.
+design. It also carries reference components, source folders any h3nr7
+project can copy in, and a skill that does the copying.
 
 ## Skills
 
@@ -12,6 +13,22 @@ design.
 | `linear-writing-plans` | Turns the approved design into a plan of tasks with acceptance criteria in `docs/plans/`, then, after a yes, creates the work in Linear. Never starts implementing. |
 | `linear-executing-plans` | Builds the plan task by task, test first, committing per task. Keeps Linear current: issues move backlog → to do → in progress → done, criteria are ticked off, and each task gets a comment with its commits and any decision made. Ends with a fresh review of the branch, and asks before merging or pushing. |
 | `linear-quick-fix` | For a fix with one obvious way to do it: explores, asks one to three questions in a dialog, files one Linear issue that carries the plan and its done-when list, asks worktree or branch (named from the issue) and then go, and builds straight through, test first, to a Done issue. Asks before merging or pushing. No docs; new issues only; anything bigger goes to `linear-brainstorming`. |
+| `h3nr7-components` | Pulls a reference component from this plugin into the project: lists the references by reading their READMEs, asks in a dialog where the copy goes and never guesses, copies the folder in with its specs and README, adds only the dependencies the project is missing with the project's own package manager, prints what to wire, and records what was copied and from which plugin version. |
+
+## Reference components
+
+Source folders under `references/`, each self-contained with a README
+that says what it is, what it depends on and what to wire. They are
+copies, not packages: once copied, the project owns the code. The
+`h3nr7-components` skill does the copying.
+
+| Reference | What it is | Dependencies |
+|---|---|---|
+| `webgpu-canvas` | An R3F canvas over three's `WebGPURenderer`, with the one rule (import three from `three/webgpu`) and the Vite alias recipe for dependencies that import `three` | three, @react-three/fiber |
+| `flock` | A flock of butterflies on WebGPU compute, with a pointer repeller | three, @react-three/fiber |
+
+Each README names the three version the code was written against (0.185,
+from h3nr7) and the one it was proved on (0.187).
 
 ## How the work maps to Linear
 
