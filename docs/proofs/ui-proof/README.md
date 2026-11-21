@@ -73,3 +73,24 @@ resolved on the day.
 - `pnpm build` on the bare scaffold: exit 0, after adding `vite/client`
   to the tsconfig `types` (TypeScript 7 refuses a side-effect import of
   a `.css` file it has no declaration for).
+
+### Task 2, the components and the lib (2026-11-21)
+
+- `references/ui` copied to `src/ui`, `pnpm test`: Test Files 9 passed
+  (9), Tests 99 passed (99). The eight copied specs and the smoke spec.
+  No spec adapted or dropped.
+- `pnpm build`: exit 0, with the specs in the tsconfig include.
+
+### Task 3, the styles (2026-11-21)
+
+- `pnpm build` with `Controls` and `Dialog` in `App.tsx` and the four
+  stylesheets in `index.css`: exit 0.
+- Built CSS: `--font-display:Baskerville, "Libre Baskerville", "Times New
+  Roman", Times, serif`; `.bg-ink`, `.bg-input`, `.bg-popover`,
+  `.bg-surface`, `.text-ink-muted` present; `mrs-eaves`, `inter-18pt`,
+  `typekit` absent.
+- `pnpm test`: Test Files 9 passed (9), Tests 99 passed (99).
+- Two findings, both now in the scaffold: Tailwind v4 skipped `src/ui`
+  because `.gitignore` lists it, so `index.css` has `@source './ui';`;
+  Radix's slider needs a `ResizeObserver` stub in jsdom, so
+  `App.spec.tsx` has one.
