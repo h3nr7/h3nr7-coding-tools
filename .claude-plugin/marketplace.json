@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "h3nr7-coding-tools",
-      "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built.",
+      "description": "Design, plan and build software work with Linear: a design doc and plan in docs/plans/, a feature as an issue, each task a sub-issue with acceptance criteria, kept current as the work is built; or a quick fix as one issue carrying its plan, built straight through.",
       "source": "./",
       "category": "development"
     }

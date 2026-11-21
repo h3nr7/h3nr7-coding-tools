@@ -2,8 +2,9 @@
 
 ## Superpowers
 
-`skills/linear-brainstorming`, `skills/linear-writing-plans` and
-`skills/linear-executing-plans` are adapted from the `brainstorming`,
+`skills/linear-brainstorming`, `skills/linear-writing-plans`,
+`skills/linear-executing-plans` and `skills/linear-quick-fix` (which
+restates parts of the other three) are adapted from the `brainstorming`,
 `writing-plans` and `executing-plans` skills in
 [obra/superpowers](https://github.com/obra/superpowers) (commit `22f0b46`),
 with parts of its `verification-before-completion`,
