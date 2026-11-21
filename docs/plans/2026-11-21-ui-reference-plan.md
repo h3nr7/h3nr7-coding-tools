@@ -156,7 +156,7 @@ copied spec passes in the proof project.
     headings" says a site stylesheet may set h1 to h4 in the display
     face, instead of naming `fonts.css`. Comment lines only.
   - `index.ts`: keep the header comment and the exports for the copied
-    set and `useIsMobile`; drop the shadcn exports, the lucide
+    set and `useIsMobile`; drop the shadcn exports, the `grep -nw "Button|Sidebar|lucide|FONT_HOSTS" references/ui/index.ts`
     re-exports and `FONT_HOSTS` with their comments. Add one line to the
     header: taken from h3nr7 `packages/ui/src` on 2026-11-21.
 - No other edit. In particular `ScrambleText.tsx` keeps its comments on
@@ -174,10 +174,10 @@ copied spec passes in the proof project.
 - [ ] `grep -rhn "from '" references/ui --include=*.ts --include=*.tsx | grep -v "from '\./\|from '\.\./"`
       lists only `react`, `radix-ui`, `clsx`, `tailwind-merge`, `vitest`,
       `@testing-library/react` and `@testing-library/user-event`.
-- [ ] `grep -rn "^import.*\(lucide-react\|class-variance-authority\|@h3nr7/\|fonts.css\)" references/ui`
+- [ ] `grep -rn "^import.*\(`grep -nw "Button|Sidebar|lucide|FONT_HOSTS" references/ui/index.ts`-react\|class-variance-authority\|@h3nr7/\|fonts.css\)" references/ui`
       finds nothing.
 - [ ] `grep -c "^export" references/ui/index.ts` is at least 11, and
-      `grep -n "Button\|Sidebar\|lucide\|FONT_HOSTS" references/ui/index.ts`
+      `grep -nw "Button|Sidebar|lucide|FONT_HOSTS" references/ui/index.ts`\|Sidebar\|lucide\|FONT_HOSTS" references/ui/index.ts`
       finds nothing.
 - [ ] In the proof project with `references/ui` copied to `src/ui`,
       `pnpm test` reports 9 test files passed (the 8 copied specs and the
@@ -300,7 +300,7 @@ the results.
       both or missing.
 - [ ] Dependencies names `radix-ui` `^1.6.7`, `clsx` `^2.1.1`,
       `tailwind-merge` `^3.6.0`, `react` and `react-dom` `^19.2.0`, and
-      `grep -n "lucide\|class-variance" references/ui/README.md` finds
+      `grep -n "`grep -nw "Button|Sidebar|lucide|FONT_HOSTS" references/ui/index.ts`\|class-variance" references/ui/README.md` finds
       nothing.
 - [ ] What to wire names `tokens.css`, `scramble.css`, `theme.css`,
       `@import 'tailwindcss'`, `@source` and `jest-dom/vitest`.
