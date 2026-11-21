@@ -1,0 +1,26 @@
+{
+  "name": "flock-proof",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "shoot": "node shoot.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "playwright": "^1.65.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.7",
+    "vitest": "^5.0.3"
+  }
+}

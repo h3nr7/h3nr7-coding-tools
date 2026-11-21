@@ -86,8 +86,33 @@ anything else that imports `three`) breaks the one rule from inside
 
 ```ts
 // src/three-webgpu.ts
+// One copy of three: everything resolves to the WebGPU build.
 export * from 'three/webgpu';
 export { CubeRenderTarget as WebGLCubeRenderTarget } from 'three/webgpu';
+
+// The WebGPU build has no WebGL renderer and none of its GLSL tables. Some
+// dependencies (drei through three-stdlib and gainmap-js) import these names
+// at module scope without using them here. Each is a stand-in that passes
+// property reads through and throws only when called or constructed, so a
+// code path that really needs WebGL fails with a clear message.
+function unavailable(name: string): never {
+  throw new Error(`three's ${name} is not available: this project renders with three/webgpu`);
+}
+function standIn(name: string): any {
+  const target = function () {};
+  const proxy: any = new Proxy(target, {
+    get: (_t, key) => (key === Symbol.toPrimitive ? () => `[${name}]` : proxy),
+    apply: () => unavailable(name),
+    construct: () => unavailable(name),
+  });
+  return proxy;
+}
+export const WebGLRenderer = standIn('WebGLRenderer');
+export const WebGLUtils = standIn('WebGLUtils');
+export const ShaderChunk = standIn('ShaderChunk');
+export const ShaderLib = standIn('ShaderLib');
+export const UniformsLib = standIn('UniformsLib');
+export const UniformsUtils = standIn('UniformsUtils');
 ```
 
 ```ts
@@ -98,7 +123,20 @@ resolve: { alias: [{ find: /^three$/, replacement: '/src/three-webgpu.ts' }] }
 The regex matches the bare specifier only, so `three/webgpu` and
 `three/tsl` resolve as they are. The second export line covers
 `WebGLCubeRenderTarget`, which drei's barrel imports and `three/webgpu`
-names `CubeRenderTarget`.
+names `CubeRenderTarget`. The stand-ins cover the other six names the
+WebGPU build lacks (three 0.187: `WebGLRenderer`, `WebGLUtils`,
+`ShaderChunk`, `ShaderLib`, `UniformsLib`, `UniformsUtils`); without them
+the production build fails with "is not exported" from three-stdlib and
+gainmap-js, which drei pulls in, even though the dev server runs. To
+check the list against another three version:
+
+```sh
+node -e "const f=require('fs'),n=p=>new Set([...f.readFileSync(p,'utf8').matchAll(/export \{([^}]*)\}/g)].flatMap(m=>m[1].split(',').map(s=>s.trim().split(/\s+as\s+/).pop())));const a=n('node_modules/three/build/three.module.js'),b=n('node_modules/three/build/three.webgpu.js');console.log([...a].filter(x=>!b.has(x)).join(' '))"
+```
+
+Proved on 2026-11-21 with drei 10.7.9: build, type-check and the page on
+WebGPU all pass with drei's `OrbitControls` rendered
+(`docs/proofs/flock-proof/`).
 
 When it is needed: only when the project has a dependency that imports
 `three`. A project whose own code follows the one rule needs no alias.

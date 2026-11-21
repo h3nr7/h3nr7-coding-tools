@@ -26,6 +26,7 @@ copies, not packages: once copied, the project owns the code. The
 |---|---|---|
 | `webgpu-canvas` | An R3F canvas over three's `WebGPURenderer`, with the one rule (import three from `three/webgpu`) and the Vite alias recipe for dependencies that import `three` | three, @react-three/fiber |
 | `flock` | A flock of butterflies on WebGPU compute, with a pointer repeller | three, @react-three/fiber |
+| `ui` | h3nr7's own UI components (Dialog, Drawer, Tooltip, Popover, Switch, Slider, Controls, Field, Nav, ScrambleText), lib and design tokens, font independent | radix-ui, clsx, tailwind-merge; Tailwind v4 for Popover, Switch, Slider and Controls |
 
 Each README names the three version the code was written against (0.185,
 from h3nr7) and the one it was proved on (0.187).

@@ -136,6 +136,9 @@ which is a regex alias on the bare name to a shim module:
 // src/three-webgpu.ts
 export * from 'three/webgpu';
 export { CubeRenderTarget as WebGLCubeRenderTarget } from 'three/webgpu';
+// plus inert stand-ins for the six other names the WebGPU build lacks;
+// see the canvas README. Found in task 5: the production build, unlike
+// the dev server, refuses drei's dependencies without them.
 ```
 
 ```ts
