@@ -3,7 +3,7 @@
 Date: 2026-11-21
 Status: approved
 Size: feature
-Linear: H3N-82
+Linear: H3N-82 (sub-issues H3N-84 to H3N-88)
 Project: h3nr7 coding tools
 Builds on: 12daysofxmas/docs/plans/2026-11-21-webgpu-story-design.md (the story, feature 1)
 

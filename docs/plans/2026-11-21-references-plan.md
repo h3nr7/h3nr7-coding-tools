@@ -1,7 +1,7 @@
 # Implementation Plan: References 1, the flock and WebGPU canvas references and the h3nr7-components skill
 
 Design: [2026-11-21-references-design.md](./2026-11-21-references-design.md)
-Linear: H3N-82
+Linear: H3N-82 (sub-issues H3N-84 to H3N-88)
 
 ## Overview
 
@@ -35,6 +35,8 @@ passing there.
 ## Tasks
 
 ### 1. The WebGPU canvas reference
+
+**Linear:** H3N-84
 
 **Goal:** `references/webgpu-canvas/` exists with the lab's canvas and a
 README a project can follow.
@@ -71,6 +73,8 @@ README a project can follow.
       in Chrome.
 
 ### 2. The flock's pure helpers and their specs
+
+**Linear:** H3N-85
 
 **Goal:** `ray.ts`, `ease.ts`, `forces.ts` and `repeller.ts` exist in
 `references/flock/`, import nothing outside the folder, and their specs
@@ -122,6 +126,8 @@ pass.
 **Depends on:** nothing.
 
 ### 3. Boids, Butterfly, Flock, index and the flock README
+
+**Linear:** H3N-86
 
 **Goal:** `references/flock/` is a complete, self-contained flock with a
 README, usable through `Flock` or by composing `Boids` with another bird.
@@ -195,6 +201,8 @@ whether it is over at all.
 
 ### 4. The h3nr7-components skill, README and manifest
 
+**Linear:** H3N-87
+
 **Goal:** The skill exists and the plugin names it and the references; the
 version is 0.4.0.
 
@@ -244,6 +252,8 @@ version is 0.4.0.
 **Depends on:** tasks 1 and 3 (the READMEs it reads).
 
 ### 5. Proof and sign-off
+
+**Linear:** H3N-88
 
 **Goal:** The feature is proved end to end on a clean proof project and
 the result recorded on H3N-82.
