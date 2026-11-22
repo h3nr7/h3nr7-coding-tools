@@ -109,7 +109,7 @@ Then again:
 
 ```sh
 pnpm build          # exit 0
-pnpm vitest run     # still 31 passed: the specs' bare `three` now resolves to the shim
+pnpm vitest run     # still 31 passed with the alias on
 node shoot.mjs      # exit 0, flock still there, drag to orbit by eye
 pnpm preview --port 4173 --strictPort   # then, in another terminal:
 URL=http://localhost:4173/ node shoot.mjs   # exit 0 on the production build too
