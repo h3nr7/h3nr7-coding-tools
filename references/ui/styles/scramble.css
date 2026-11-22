@@ -1,0 +1,307 @@
+/*
+ * Structure for <ScrambleText>. Behaviour, not a look.
+ *
+ * Deliberately NOT a split-flap: a real one needs two half-cards per character,
+ * a hinge, a back face and a clipped overflow box — five elements per letter,
+ * so a forty-character title becomes two hundred nodes and a stacking context
+ * per glyph. The feel worth keeping is the roll and the wave, and both come
+ * from the character changing on a stagger. The movement here is one transform
+ * on the span that was already there.
+ *
+ * One custom property is written by the component each frame:
+ *
+ *   --flap   0..1 position within the current card
+ *
+ * It has a neutral fallback, so an element that has never animated — and every
+ * element before hydration — renders as plain text.
+ */
+
+/**
+ * How far through a breath this element is: 0 at rest, 1 at the deepest point.
+ *
+ * Registered rather than left as a plain custom property, because an
+ * unregistered one has no type and therefore cannot be interpolated — the
+ * animation below would step from 0 to 1 at the halfway mark and the breath
+ * would be a blink. `@property` gives it a numeric type, and the browser
+ * animates it smoothly.
+ *
+ * **This indirection is the whole point.** The breath used to animate `filter`
+ * and `opacity` directly, which meant those properties were animation-
+ * controlled — and a CSS transition cannot start for a property an animation
+ * owns. Hovering therefore removed the animation and the text jumped to sharp
+ * in one frame, measured at 4.284px to 0 with nothing in between, while the
+ * 184ms fade sat there declared and unused. Animating a number instead leaves
+ * `filter` and `opacity` under the transition where they belong.
+ */
+@property --h3-breath {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.h3-scramble-word {
+  /*
+   * Keeps a word whole.
+   *
+   * Every character is inline-block, which hands the browser a break
+   * opportunity between each one; without this a long title wraps mid-word.
+   * Breaks belong between words, as in ordinary text.
+   */
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.h3-scramble-char {
+  /*
+   * One flap cell. Usually a single character — but a ligature group (`st`,
+   * `ct`, `fi`) is one cell holding two or three characters, so that the glyph
+   * forms inside the box and the pinned width is the width of the fused glyph
+   * rather than of its parts set apart.
+   *
+   * inline-block so the width the component pins actually applies — an inline
+   * box ignores `width`, and the whole line would jitter as the glyphs change.
+   */
+  display: inline-block;
+  text-align: center;
+
+  /*
+   * The hinge, suggested rather than modelled: each new card drops the last
+   * fraction of its travel into place. At 0.08em it reads as mechanical at a
+   * glance and stays legible at a stare.
+   *
+   * `--flap` defaults to 1 — settled — so a character at rest has no transform
+   * to composite.
+   *
+   * **Movement only.** No opacity and no colour: the character inherits
+   * whatever the link around it is, unchanged, throughout. The substitution
+   * and the hinge are the whole effect, which leaves the text at full contrast
+   * while it turns over rather than dimming the thing the reader is aiming at.
+   */
+  transform: translateY(calc((1 - var(--flap, 1)) * -0.08em));
+  /* Its own layer while flapping only; promoting every character permanently
+     would hand the compositor a layer per letter for the whole session. */
+  will-change: auto;
+}
+
+.h3-scramble[data-flapping] .h3-scramble-char {
+  will-change: transform;
+}
+
+/*
+ * No hover tint, and one consequence worth stating.
+ *
+ * The colour stays put, so this component contributes NOTHING visual to a
+ * visitor who has `prefers-reduced-motion: reduce` — the flapping is skipped
+ * and there is now no tint to fall back on. The same is true before hydration
+ * and if JS never arrives.
+ *
+ * That is fine as long as the surrounding link carries its own hover and focus
+ * styling, which is where the affordance belongs anyway. It stops being fine
+ * the moment a title's only hover signal is this effect.
+ */
+
+/*
+ * The pointer.
+ *
+ * A browser gives `cursor: pointer` to an `<a href>`, and nothing to a bare
+ * `<a>` — so an anchor used as a hook for this effect looks inert even while it
+ * is flapping. Matched by containment rather than set on the span itself, so
+ * the cursor belongs to whatever is actually clickable; the same text inside a
+ * heading with no link keeps the normal cursor.
+ *
+ * Worth saying plainly: this makes it LOOK interactive. Only an `href` (or a
+ * `<button>`) makes it BE interactive — focusable, announced, usable without a
+ * mouse.
+ */
+a:has(> .h3-scramble),
+button:has(> .h3-scramble) {
+  cursor: pointer;
+}
+
+/*
+ * ─── Blurred at rest (opt-in, via the `blurred` prop) ───────────────────────
+ *
+ * The text sits blurred and dimmed until it is hovered or focused, then comes
+ * sharp as the flapping starts. It is the resting state that carries the
+ * invitation: a run of soft titles reads as "these do something" without any of
+ * them having to be underlined or coloured.
+ *
+ * **Asymmetric on purpose, and this is the whole effect.** Coming sharp is
+ * quick — 2/5 of the flap duration — because it is answering the reader, and a
+ * slow answer feels like lag rather than like a response. Going back is slower
+ * at 1/2, because nobody is waiting for it: a fast blur snaps the text away
+ * from someone whose pointer has merely passed over it. The two directions get
+ * their durations from different rules below, which is how one transition can
+ * have two speeds.
+ *
+ * **Driven by `:hover`/`:focus-visible`, not by the component's JS.** The blur
+ * is then correct before hydration, and correct if the script never arrives —
+ * which matters more here than usual, because the failure mode of a
+ * JS-controlled blur is permanently unreadable body content.
+ */
+@media (hover: hover) {
+  /*
+   * Only where hovering is possible.
+   *
+   * On a touch screen there is no hover to undo this with, so the text would
+   * stay blurred for the whole visit — the site's own titles, permanently out
+   * of focus, with no way to fix it. `(hover: hover)` is the difference between
+   * a decoration and a page a phone cannot read. Focus still works inside the
+   * query for keyboard users on a hovering device; a touch user simply gets the
+   * plain text, which is the right answer rather than a lesser one.
+   */
+  .h3-scramble[data-blurred] {
+    /*
+     * The resting look, composed with however far through a breath it is.
+     *
+     * `--h3-breath` is 0 for anything that is not breathing — its registered
+     * initial value — and the depth falls back to 0 as well, so a title without
+     * `breathe` computes to exactly the rest blur and opacity with no animation
+     * anywhere near it.
+     */
+    filter: blur(
+      calc(
+        var(--h3-scramble-rest-blur, 3px) *
+          (1 + var(--h3-breath) * var(--h3-scramble-breathe-depth, 0))
+      )
+    );
+    opacity: calc(
+      var(--h3-scramble-rest-opacity, 0.7) *
+        (1 - var(--h3-breath) * var(--h3-scramble-breathe-depth, 0))
+    );
+
+    /*
+     * This is the RETURN direction. A transition declared on the resting state
+     * governs the move back INTO it, so this duration is the slow one; the
+     * awake rule below overrides it for the way out.
+     */
+    transition:
+      filter var(--h3-scramble-sleep-ms, 230ms) var(--ease-out),
+      opacity var(--h3-scramble-sleep-ms, 230ms) var(--ease-out);
+
+    /*
+     * `filter` creates a containing block and a stacking context, so the span
+     * is promoted anyway — saying so lets the compositor keep the blurred and
+     * sharp versions rather than re-rasterising text on every frame of the
+     * fade.
+     */
+    will-change: filter, opacity;
+  }
+
+  /*
+   * ─── Breathing (opt-in, via the `breathe` prop) ───────────────────────────
+   *
+   * The resting blur drifts in and out on a slow cycle instead of sitting
+   * perfectly still. It is not an effect anyone should notice happening — the
+   * point is what it does to a page nobody has touched yet: text that is
+   * *exactly* static reads as an image of text, and a few tenths of a pixel of
+   * movement is the difference between a screenshot and something alive.
+   *
+   * **Composed from the resting values rather than fixed.** The peak is the
+   * rest blur times `1 + depth` and the rest opacity times `1 - depth`, so
+   * retuning `restBlur` or `restOpacity` carries the breath with it instead of
+   * leaving an amplitude that was chosen against numbers no longer in use.
+   *
+   * `alternate` with `ease-in-out` is what makes it respiration rather than a
+   * pulse: the cycle runs out and back rather than resetting, and it slows at
+   * both ends the way a breath does. A `from`/`to` loop without it snaps from
+   * deepest back to shallowest once a cycle, which is a blink.
+   *
+   * Each instance is given its own period AND a negative `animation-delay`,
+   * both derived from its own text — see `breathRhythm` in the component. The
+   * delay scatters them across the cycle on load; the differing periods are
+   * what keep them drifting apart afterwards, which a shared period cannot do
+   * however the phases are arranged.
+   *
+   * **It animates a number, not the look.** `--h3-breath` feeds the `filter`
+   * and `opacity` in the rest rule above rather than being set by these
+   * keyframes, which is what leaves those two properties under the transition
+   * and lets hover fade them. See the note on `@property --h3-breath`.
+   */
+  .h3-scramble[data-blurred][data-breathe] {
+    animation: h3-scramble-breathe var(--h3-scramble-breathe-ms, 5200ms)
+      ease-in-out infinite alternate;
+    /* Negative, so it starts partway through rather than waiting to begin. */
+    animation-delay: var(--h3-scramble-breathe-delay, 0ms);
+  }
+
+  :is(a, button):hover .h3-scramble[data-blurred],
+  :is(a, button):focus-visible .h3-scramble[data-blurred],
+  .h3-scramble[data-blurred]:hover,
+  /*
+   * `data-awake` is the component's own doing: `randomReveal` sets it on a
+   * timer so a title surfaces by itself. Same rule as hover, so a reveal that
+   * lands while the reader is already hovering changes nothing rather than
+   * fighting it.
+   */
+  .h3-scramble[data-blurred][data-awake] {
+    filter: blur(0);
+    opacity: 1;
+    /* The quick direction. Only the duration changes — the property list and
+       the easing are inherited from the rule above. */
+    transition-duration: var(--h3-scramble-wake-ms, 184ms);
+
+    /*
+     * The breath keeps running, and that is now harmless.
+     *
+     * It drives `--h3-breath` and nothing else; `filter` and `opacity` are
+     * declared here, so this rule simply wins. Stopping it used to be necessary
+     * — and was what broke the fade, since a property an animation owns cannot
+     * transition. Leaving it alone means there is nothing to restart, nothing
+     * to hold off, and no seam in either direction.
+     */
+  }
+}
+
+/*
+ * One number, in and out. The rest rule turns it into a look.
+ *
+ * `alternate` on the animation runs this out and back rather than resetting,
+ * and `ease-in-out` slows it at both ends — which together are the difference
+ * between respiration and a sawtooth.
+ */
+@keyframes h3-scramble-breathe {
+  from {
+    --h3-breath: 0;
+  }
+  to {
+    --h3-breath: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .h3-scramble-char {
+    transform: none;
+  }
+
+  /*
+   * No breathing.
+   *
+   * This is the clearest case in the whole component: a continuous, unprompted
+   * loop running on a page the reader has not touched, with nothing to dismiss
+   * it. Everything else here is a response to hover and stays; this is the part
+   * that happens anyway, so it is the part that goes.
+   */
+  .h3-scramble[data-breathe] {
+    animation: none;
+  }
+}
+
+/*
+ * Visually hidden, still read.
+ *
+ * ScrambleText creates a span with this class to carry the real string for
+ * assistive technology while the visible characters flap. In h3nr7 the rule
+ * lives in the web app stylesheet; it is here so the component stands alone.
+ */
+.h3-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
